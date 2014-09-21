@@ -1,0 +1,255 @@
+
+<!-- saved from url=(0042)http://169.254.125.239:81/video/livemb.asp -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<!--<script type="text/javascript" src="./Live Video_files/b28n.js"></script>-->
+
+<style type="text/css">
+ body 
+{
+font: 0.8em Verdana, Arial, Helvetica, sans-serif;
+background-color: #434343;
+}
+.tool_bar
+{
+}
+.tool_bar input
+{
+    width:40px;
+    height:35px;
+}
+.fun_bar
+{
+}
+.tool_img
+{
+    width:80px;
+    height:48px;	
+}
+</style>
+
+<script language="JavaScript" type="text/javascript">
+
+//Butterlate.setTextDomain("video");
+
+var ptz_enb=1;
+var preset_enb=1;
+var ptz_start=0;
+var ptz_speed=8;
+var ptz_speed_max=12;
+var ptz_preset_max=6;
+var b_init = 0;
+var cam_addr = "192.168.0.108:81";
+var cam_port = 81;
+var cam_usr = "admin";
+var cam_pwd = "";
+var page_acc=3;
+
+var ptz_saveshow = 0;
+
+      var imageNr = 0; // Serial number of current image
+      var finished = new Array(); // References to img objects which have finished downloading
+      var paused = false;
+      var previous_time = new Date();
+	
+      function createImagePlayer() {
+        var img = new Image();
+        img.style.position = "absolute";
+        img.style.zIndex = imageNr;
+        //img.onload = imageOnload;
+        //img.onclick = imageOnclick;
+        //img.width = "100%";
+		//imageOnload();
+		
+		
+		
+        img.src = "http://169.254.125.239:81/media/?action=snapshot"   + (++imageNr);;
+
+        var webcam = document.getElementById("webcam");
+        webcam.insertBefore(img, webcam.firstChild);
+		
+		webcam.removeChild(webcam.lastChild);
+		
+      }
+	  
+	  
+
+      // Two layers are always present (except at the very beginning), to avoid flicker
+      function imageOnload() {
+        this.style.zIndex = imageNr; // Image finished, bring to front!
+        while (1 < finished.length) {
+          var del = finished.shift(); // Delete old image(s) from document
+          del.parentNode.removeChild(del);
+        }
+        finished.push(this);
+        current_time = new Date();
+        delta = current_time.getTime() - previous_time.getTime();
+        //fps   = (1000.0 / delta).toFixed(3);
+        //document.getElementById('info').firstChild.nodeValue = delta + " ms (" + fps + " fps)";
+        previous_time = current_time;
+        //if (!paused) createImagePlayer();
+      }
+
+      function imageOnclick() { // Clicking on the image will pause the stream
+        paused = !paused;
+        if (!paused) createImagePlayer();
+      }
+
+function page_init() {
+
+    //initTranslation();
+    createImagePlayer();
+     
+    //cmd_frm.init_comp();
+   setInterval(createImagePlayer,100);
+    if ( ptz_enb == 0 || page_acc < 1 )
+    {
+        document.getElementById("tool_ptz").style.display="none";
+        document.getElementById("tool_preset").style.display="none";
+    }
+    else if ( preset_enb == 0 )
+    {
+        document.getElementById("tool_preset").style.display="none";
+    }
+}
+
+function preset_doact(preset_act, idx) {
+    if ( preset_act == 1 )
+    {
+        cmd_frm.ptz_savepos(idx);
+    }
+    else
+    {
+        cmd_frm.ptz_gotopreset(idx);
+    }
+}
+
+function refresh_stream()
+{
+	location.reload();
+}
+function img_size(vlu)
+{
+	cmd_frm.imagesize_cmd(vlu);
+	setTimeout('refresh_stream()', 1000);
+}
+
+var mbptz_dotime = 400;
+
+function delay_run(fun)
+{
+	setTimeout(fun, mbptz_dotime);
+}
+			
+function mbptz_up()
+{
+	cmd_frm.pzt_up(1);
+	delay_run("cmd_frm.pzt_up(0)");
+}
+function mbptz_down()
+{
+	cmd_frm.pzt_down(1);
+	delay_run("cmd_frm.pzt_down(0)");
+}
+function mbptz_left()
+{
+	//cmd_frm.pzt_left(1);
+	//delay_run("cmd_frm.pzt_left(0)");
+	var vlu = 1;
+	var code = 2;
+	iframe = document.getElementById('cmd_frm');
+	iframe.src = 'http://' + cam_addr + ':' + cam_port + '/media/?action=cmd&code=' + code + '&value=' + vlu + "&user=" + cam_usr + "&pwd=" + cam_pwd;
+
+}
+function mbptz_right()
+{
+	cmd_frm.pzt_right(1);
+	delay_run("cmd_frm.pzt_right(0)");
+}
+
+function stop(vlu) {
+
+
+
+	//var vlu = 1;
+	var code = 3;
+	iframe = document.getElementById('ids');
+	iframe.src = 'http://' + cam_addr + ':' + cam_port + '/media/?action=cmd&code=' + code + '&value=' + vlu + '&user=' + cam_usr + '&pwd=' + cam_pwd;
+
+}
+
+function up() {
+
+	var vlu = 1;
+	var code = 2;
+	iframe = document.getElementById('ids');
+	iframe.src = 'http://' + cam_addr + ':' + cam_port + '/media/?action=cmd&code=' + code + '&value=' + vlu + '&user=' + cam_usr + '&pwd=' + cam_pwd;
+
+	setTimeout(function(){stop(vlu)}, 500);
+	
+}
+
+function down() {
+
+	var vlu = 2;
+	var code = 2;
+	iframe = document.getElementById('ids');
+	iframe.src = 'http://' + cam_addr + ':' + cam_port + '/media/?action=cmd&code=' + code + '&value=' + vlu + '&user=' + cam_usr + '&pwd=' + cam_pwd;
+
+	setTimeout(function(){stop(vlu)}, 500);
+	
+}
+
+function left() {
+
+	var vlu = 3;
+	var code = 2;
+	iframe = document.getElementById('ids');
+	iframe.src = 'http://' + cam_addr + ':' + cam_port + '/media/?action=cmd&code=' + code + '&value=' + vlu + '&user=' + cam_usr + '&pwd=' + cam_pwd;
+	setTimeout(function(){stop(vlu)}, 500);
+	
+}
+
+function right() {
+
+	var vlu = 4;
+	var code = 2;
+	iframe = document.getElementById('ids');
+	iframe.src = 'http://' + cam_addr + ':' + cam_port + '/media/?action=cmd&code=' + code + '&value=' + vlu + '&user=' + cam_usr + '&pwd=' + cam_pwd;
+
+	setTimeout(function(){stop(vlu)}, 500);
+	
+}
+
+</script>
+
+<title>Live Video</title>
+</head>
+<!--  -->
+<body onload="page_init()" oncontextmenu="return false;">
+
+ <div class="tool_bar" id="tool_preset">
+    </div>
+	
+    <div class="fun_bar" id="tool_ptz">
+        <!--<span><img alt="up" src="./Live Video_files/up.gif" onclick="mbptz_up()" class="tool_img"></span>
+        <span><img alt="down" src="./Live Video_files/down.gif" onclick="mbptz_down()" class="tool_img"></span>
+        <span><img alt="left" src="./Live Video_files/left.gif" onclick="mbptz_right()" class="tool_img"></span>
+        <span><img alt="right" src="./Live Video_files/right.gif" onclick="mbptz_left()" class="tool_img"></span>-->
+		<img src="./Live Video_files/up.gif" onclick="up()">up</img>
+		<img src="./Live Video_files/down.gif" onclick="down()">down</img>
+		<img src="./Live Video_files/left.gif" onclick="left()">left</img>
+		<img src="./Live Video_files/right.gif" onclick="right()">right</img>
+
+    </div>
+	
+
+    <div id="webcam">
+        <img src="http://169.254.125.239:81/media/?action=snapshot" alt="Live Video" />
+    </div>
+<!--
+   <iframe id="cmd_frm" name="cmd_frm" src="http://www.google.com" width="0" height="0" 
+        marginwidth="2" marginheight="2"   ></iframe>-->
+
+<iframe id="ids" name="ids" width="0" height="0"></iframe>
+
+		</body></html>

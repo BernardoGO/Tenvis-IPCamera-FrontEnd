@@ -1,0 +1,75 @@
+<script type="text/javascript">
+
+var b_init = 0;
+var cam_addr = "192.168.0.101:81";
+var cam_port = 81;
+var cam_usr = "admin";
+var cam_pwd = "";
+
+function stop(vlu) {
+
+
+
+	//var vlu = 1;
+	var code = 3;
+	iframe = document.getElementById('i');
+	iframe.src = 'http://' + cam_addr + ':' + cam_port + '/media/?action=cmd&code=' + code + '&value=' + vlu + '&user=' + cam_usr + '&pwd=' + cam_pwd;
+
+}
+
+function up() {
+
+	var vlu = 1;
+	var code = 2;
+	iframe = document.getElementById('i');
+	iframe.src = 'http://' + cam_addr + ':' + cam_port + '/media/?action=cmd&code=' + code + '&value=' + vlu + '&user=' + cam_usr + '&pwd=' + cam_pwd;
+
+	setTimeout(function(){stop(vlu)}, 500);
+	
+}
+
+function down() {
+
+	var vlu = 2;
+	var code = 2;
+	iframe = document.getElementById('i');
+	iframe.src = 'http://' + cam_addr + ':' + cam_port + '/media/?action=cmd&code=' + code + '&value=' + vlu + '&user=' + cam_usr + '&pwd=' + cam_pwd;
+
+	setTimeout(function(){stop(vlu)}, 500);
+	
+}
+
+function left() {
+
+	var vlu = 3;
+	var code = 2;
+	iframe = document.getElementById('i');
+	iframe.src = 'http://' + cam_addr + ':' + cam_port + '/media/?action=cmd&code=' + code + '&value=' + vlu + '&user=' + cam_usr + '&pwd=' + cam_pwd;
+	setTimeout(function(){stop(vlu)}, 500);
+	
+}
+
+function right() {
+
+	var vlu = 4;
+	var code = 2;
+	iframe = document.getElementById('i');
+	iframe.src = 'http://' + cam_addr + ':' + cam_port + '/media/?action=cmd&code=' + code + '&value=' + vlu + '&user=' + cam_usr + '&pwd=' + cam_pwd;
+
+	setTimeout(function(){stop(vlu)}, 500);
+	
+}
+
+
+//-->
+</script>
+</head>
+<body>
+
+<a onclick="up()">up</a>
+<a onclick="down()">down</a>
+<a onclick="left()">left</a>
+<a onclick="right()">right</a>
+
+<iframe id="i" name="i" width="400" height="400"></iframe>
+</body> 
